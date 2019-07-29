@@ -373,7 +373,7 @@
                                 <goal>install</goal>
                             </goals>
                             <filterProperties>
-                                <netbeans.version>RELEASE110</netbeans.version>
+                                <netbeans.version>RELEASE111</netbeans.version>
                             </filterProperties>
                         </configuration>
                         <executions>
@@ -480,7 +480,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>nbm-maven-harness</artifactId>
-            <version>RELEASE110</version>
+            <version>RELEASE111</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
