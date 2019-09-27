@@ -1,20 +1,23 @@
-/* ==========================================================================
- * Copyright 2003-2007 Mevenide Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- * =========================================================================
- */
 package org.apache.netbeans.nbm;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,10 +41,10 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * Run NetBeans IDE with additional custom module clusters, 
  * to be used in conjunction with nbm:cluster.
  * Semi-deprecated; used only for standalone modules and "suites".
- * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
+ * @author Milos Kleint
  *
  */
-@Mojo(name="run-ide", aggregator=true, requiresDependencyResolution= ResolutionScope.RUNTIME )
+@Mojo( name = "run-ide", aggregator = true, requiresDependencyResolution = ResolutionScope.RUNTIME )
 public class RunNetBeansMojo
         extends AbstractMojo
 {
@@ -50,23 +53,23 @@ public class RunNetBeansMojo
      * directory where the module(s)' NetBeans cluster(s) are located.
      * is related to nbm:cluster goal.
      */
-    @Parameter(required=true, defaultValue="${project.build.directory}/netbeans_clusters")
+    @Parameter( required = true, defaultValue = "${project.build.directory}/netbeans_clusters" )
     protected File clusterBuildDir;
     /**
      * directory where the the NetBeans platform/IDE installation is,
      * denotes the root directory of NetBeans installation.
      */
-    @Parameter(required=true, property="netbeans.installation")
+    @Parameter( required = true, property = "netbeans.installation" )
     protected File netbeansInstallation;
     /**
      * NetBeans user directory for the executed instance.
      */
-    @Parameter(required=true, defaultValue="${project.build.directory}/userdir", property="netbeans.userdir")
+    @Parameter( required = true, defaultValue = "${project.build.directory}/userdir", property = "netbeans.userdir" )
     protected File netbeansUserdir;
     /**
      * additional command line arguments. 
      */
-    @Parameter(property="netbeans.run.params")
+    @Parameter( property = "netbeans.run.params" )
     protected String additionalArguments;
     
     /**
@@ -76,7 +79,7 @@ public class RunNetBeansMojo
      * parameter).
      * @since 3.11.1
      */
-    @Parameter(property="netbeans.run.params.debug")
+    @Parameter( property = "netbeans.run.params.debug" )
     protected String debugAdditionalArguments;    
 
     /**

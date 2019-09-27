@@ -1,20 +1,23 @@
-/*
- *  Copyright 2008 Johan Andrén.
- * 
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  under the License.
- */
 package org.apache.netbeans.nbm;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import java.io.File;
 import org.apache.maven.plugin.AbstractMojo;
@@ -29,10 +32,10 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 /**
  * Create a standalone application out of the composed clusters of nbm-application
  *
- * @author <a href="mailto:johan.andren@databyran.se">Johan Andrén</a>
+ * @author Johan Andrén
  * @author Milos Kleint
  */
-@Mojo(name="standalone-zip", requiresProject=true, threadSafe = true)
+@Mojo( name = "standalone-zip", requiresProject = true, threadSafe = true )
 public class CreateStandaloneMojo
         extends AbstractMojo
 {
@@ -40,22 +43,22 @@ public class CreateStandaloneMojo
     /**
      * The branding token for the application based on NetBeans platform.
      */
-    @Parameter(property="netbeans.branding.token", required=true)
+    @Parameter( property = "netbeans.branding.token", required = true )
     protected String brandingToken;
     /**
      * output directory where the the NetBeans application will be created.
      */
-    @Parameter(required=true, defaultValue="${project.build.directory}")
+    @Parameter( required = true, defaultValue = "${project.build.directory}" )
     private File outputDirectory;
     /**
      * Name of the zip artifact produced by the goal (without .zip extension)
      */
-    @Parameter(defaultValue="${project.build.finalName}")
+    @Parameter( defaultValue = "${project.build.finalName}" )
     private String finalName;
     /**
      * The Maven project.
      */
-    @Parameter(required=true, readonly=true, property="project")
+    @Parameter( required = true, readonly = true, property = "project" )
     private MavenProject project;
 
     /**
@@ -63,6 +66,7 @@ public class CreateStandaloneMojo
      * @throws MojoExecutionException if an unexpected problem occurs
      * @throws MojoFailureException if an expected problem occurs
      */
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {

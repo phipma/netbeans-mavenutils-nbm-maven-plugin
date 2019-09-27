@@ -1,26 +1,41 @@
-/*
- * Copyright 2012 Frantisek Mantlik <frantisek at mantlik.cz>.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * under the License.
- */
 package org.apache.netbeans.nbm;
 
-import java.io.*;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -43,11 +58,11 @@ import org.apache.tools.ant.util.StringUtils;
  * <p>See a <a href="http://www.mojohaus.org/nbm-maven-plugin/buildinstexample.html">how-to</a> on customizing the installer.
  * @author <a href="mailto:frantisek@mantlik.cz">Frantisek Mantlik</a>
  */
-@Mojo(name="build-installers", 
-        requiresProject=true, 
-        requiresDependencyResolution=ResolutionScope.RUNTIME,
+@Mojo( name = "build-installers", 
+        requiresProject = true, 
+        requiresDependencyResolution = ResolutionScope.RUNTIME,
         threadSafe = true,
-        defaultPhase=LifecyclePhase.PACKAGE )
+        defaultPhase = LifecyclePhase.PACKAGE )
 public class BuildInstallersMojo
         extends AbstractNbmMojo
 {
@@ -55,53 +70,53 @@ public class BuildInstallersMojo
     /**
     * output directory.
     */
-    @Parameter(defaultValue="${project.build.directory}", required=true)
+    @Parameter( defaultValue = "${project.build.directory}", required = true )
     protected File outputDirectory;
     /**
     * The branding token for the application based on NetBeans platform.
     */
-    @Parameter(property="netbeans.branding.token", required=true)
+    @Parameter( property = "netbeans.branding.token", required = true )
     protected String brandingToken;
     /**
     * Installation directory name at the destination system
     * Deprecated, to be removed, was never actually used.
     */
-    @Parameter(property="netbeans.branding.token")
+    @Parameter( property = "netbeans.branding.token" )
     protected String installDirName;
     /**
     * Prefix of all generated installers files
     */
-    @Parameter(defaultValue="${project.build.finalName}")
+    @Parameter( defaultValue = "${project.build.finalName}" )
     private String installersFilePrefix;
     /**
      * Create installer for Windows
      */
-    @Parameter(defaultValue="true")
+    @Parameter( defaultValue = "true" )
     private boolean installerOsWindows;
     /**
      * Create installer for Solaris
      */
-    @Parameter(defaultValue="true")
+    @Parameter( defaultValue = "true" )
     private boolean installerOsSolaris;
     /**
      * Create installer for Linux
      */
-    @Parameter(defaultValue="true")    
+    @Parameter( defaultValue = "true" )
     private boolean installerOsLinux;
     /**
      * Create installer for MacOSx
      */
-    @Parameter(defaultValue="true")    
+    @Parameter( defaultValue = "true" )
     private boolean installerOsMacosx;
     /**
      * Enable Pack200 compression
      */
-    @Parameter(defaultValue="true")
+    @Parameter( defaultValue = "true" )
     private boolean installerPack200Enable;
     /**
      * License file
      */
-    @Parameter(defaultValue="${basedir}/license.txt")
+    @Parameter( defaultValue = "${basedir}/license.txt" )
     private File installerLicenseFile;
     /**
      * Custom installer template.
@@ -122,7 +137,7 @@ public class BuildInstallersMojo
     /**
      * Name of the zip artifact used to produce installers from (without .zip extension)
      */
-    @Parameter(defaultValue="${project.build.finalName}")
+    @Parameter( defaultValue = "${project.build.finalName}" )
     private String finalName;
 
     // <editor-fold defaultstate="collapsed" desc="Component parameters">
@@ -132,13 +147,13 @@ public class BuildInstallersMojo
     @Component
     private MavenProjectHelper projectHelper;
         
-    @Parameter(readonly=true, required=true, property="basedir")
+    @Parameter( readonly = true, required = true, property = "basedir" )
     private File basedir;
     /**
     * The Maven Project.
     */
-    @Parameter(required=true, readonly=true, property="project")    
-    private MavenProject project;    
+    @Parameter( required = true, readonly = true, property = "project" )
+    private MavenProject project;
 
     // </editor-fold>
     @Override
@@ -153,8 +168,9 @@ public class BuildInstallersMojo
                     "This goal only makes sense on project with 'nbm-application' packaging." );
         }
         
-        if (!installerOsLinux && !installerOsMacosx && !installerOsSolaris && !installerOsWindows) {
-            getLog().warn( "None of the Operating System Installers selected, skipping 'build-installers' goal.");
+        if ( !installerOsLinux && !installerOsMacosx && !installerOsSolaris && !installerOsWindows )
+        {
+            getLog().warn( "None of the Operating System Installers selected, skipping 'build-installers' goal." );
             return;
         }
 
@@ -184,7 +200,7 @@ public class BuildInstallersMojo
         Map<String, String> props = new HashMap<String, String> ();
 
         props.put( "suite.location", basedir.getAbsolutePath().replace( "\\", "/" ) );
-        props.put( "suite.props.app.name", brandingToken);
+        props.put( "suite.props.app.name", brandingToken );
         props.put( "suite.dist.zip", zipFile.getAbsolutePath().replace( "\\", "/" ) );
         props.put( "suite.dist.directory", outputDirectory.getAbsolutePath().replace( "\\", "/" ) );
         props.put( "installer.build.dir", new File( outputDirectory, "installerbuild" ).getAbsolutePath().replace( "\\", "/" ) );
